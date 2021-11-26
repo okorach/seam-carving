@@ -96,7 +96,7 @@ RGBImage to_RGB(const GrayImage &gimage)
 
 // Get a pixel without accessing out of bounds
 // return nearest valid pixel color
-void clamp(long &val, long max)
+long clamp(long val, long max)
 {
     if (val < 0)
     {
@@ -106,17 +106,36 @@ void clamp(long &val, long max)
     {
         val = max;
     }
+    return val;
 }
 
 // Convolve a single-channel image with the given kernel.
 GrayImage filter(const GrayImage &gray, const Kernel &kernel)
 {
-    for (int i(0); i< gray.size() ; ++i) {
-        for ( int j(0); j< gray[i].t ; ++i) {
-            for (int k(0))
+    GrayImage filtered;
+    vector<double> line;
+    long max_i(gray.size());
+    long max_j(gray[0].size());
+    for (long i(0); i < max_i; ++i)
+    {
+        line.clear();
+        for (long j(0); j < max_j; ++i)
+        {
+            long val = kernel[0][0] * gray[clamp(i - 1, max_i)][clamp(j - 1, max_j)] +
+            kernel[0][1] * gray[clamp(i - 1,max_i)][j] + 
+            kernel[0][2] * gray[clamp(i - 1,max_i)][clamp(j + 1, max_j)];
+            val = val + kernel[1][0] * gray[clamp(i, max_i)][clamp(j - 1, max_j)] +
+            kernel[1][1] * gray[clamp(i,max_i)][j] + 
+            kernel[1][2] * gray[clamp(i,max_i)][clamp(j + 1, max_j)];
+            val = val + kernel[2][0] * gray[clamp(i+1, max_i)][clamp(j - 1, max_j)] +
+            kernel[2][1] * gray[clamp(i+1,max_i)][j] + 
+            kernel[2][2] * gray[clamp(i+1,max_i)][clamp(j + 1, max_j)];
+            line.push_back(val);
+
         }
+        filtered.push_back(line);
     }
-    return {}; // TODO MODIFY AND COMPLETE
+    return filtered;
 }
 
 // Smooth a single-channel image
