@@ -263,5 +263,5 @@ double convolve_nxn(const GrayImage& gray, const Kernel& kernel, const int n)
 // a 3x3 gray image and a 3x3 kernel
 double convolve_3x3(const GrayImage& gray, const Kernel& kernel)
 {
-    return convolve_nxn(gray, kernel, 3)
+    return convolve_nxn(gray, kernel, 3);
 }
