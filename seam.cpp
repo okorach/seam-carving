@@ -106,7 +106,6 @@ void clamp(long &val, long max)
     {
         val = max;
     }
-    // TODO : COMPLETE
 }
 
 // Convolve a single-channel image with the given kernel.
