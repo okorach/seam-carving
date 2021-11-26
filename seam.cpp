@@ -242,3 +242,26 @@ RGBImage remove_seam(const RGBImage &image, const Path &seam)
     }
     return result;
 }
+
+// Computes the convolution of the central pixel of
+// a nxn gray image and a nxn kernel
+double convolve_nxn(const GrayImage& gray, const Kernel& kernel, const int n)
+{
+    vector<double> line;
+    double result(0);
+    for (long i(0); i < n; ++i)
+    {
+        for (long j(0); j < n; ++i)
+        {
+            result = result + kernel[i][j] * gray[i][j];
+        }
+    }
+    return result;
+}
+
+// Computes the convolution of the central pixel of
+// a 3x3 gray image and a 3x3 kernel
+double convolve_3x3(const GrayImage& gray, const Kernel& kernel)
+{
+    return convolve_nxn(gray, kernel, 3)
+}
