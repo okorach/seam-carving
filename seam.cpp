@@ -109,6 +109,36 @@ long clamp(long val, long max)
     return val;
 }
 
+double convol3x3(const GrayImage &gray, const Kernel &kernel)
+{
+    double val(0);
+    for (int i(0); i < kernel.size(); ++i)
+    {
+        for (int j(0); j < kernel[0].size(); ++j)
+        {
+            val = val + kernel[i][j] * gray[i][j];
+        }
+    }
+    return val;
+}
+
+GrayImage subimage(const GrayImage &gray, int x, int y)
+{
+    GrayImage img;
+    vector<double> line;
+    long max_i(gray.size());
+    long max_j(gray[0].size());
+    for (int i(x - 1); i <= x + 1; ++i)
+    {
+        line.clear();
+        for (int j(y - 1); j <= y + 1; ++j)
+        {
+            line.push_back(gray[clamp(i, max_i)][clamp(j, max_j)]);
+        }
+        img.push_back(line);
+    }
+    return img;
+}
 // Convolve a single-channel image with the given kernel.
 GrayImage filter(const GrayImage &gray, const Kernel &kernel)
 {
@@ -121,17 +151,10 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel)
         line.clear();
         for (long j(0); j < max_j; ++i)
         {
-            long val = kernel[0][0] * gray[clamp(i - 1, max_i)][clamp(j - 1, max_j)] +
-            kernel[0][1] * gray[clamp(i - 1,max_i)][j] + 
-            kernel[0][2] * gray[clamp(i - 1,max_i)][clamp(j + 1, max_j)];
-            val = val + kernel[1][0] * gray[clamp(i, max_i)][clamp(j - 1, max_j)] +
-            kernel[1][1] * gray[clamp(i,max_i)][j] + 
-            kernel[1][2] * gray[clamp(i,max_i)][clamp(j + 1, max_j)];
-            val = val + kernel[2][0] * gray[clamp(i+1, max_i)][clamp(j - 1, max_j)] +
-            kernel[2][1] * gray[clamp(i+1,max_i)][j] + 
-            kernel[2][2] * gray[clamp(i+1,max_i)][clamp(j + 1, max_j)];
-            line.push_back(val);
+            GrayImage imageounette = subimage(gray, i, j);
+            double val = convol3x3(imageounette, kernel);
 
+            line.push_back(val);
         }
         filtered.push_back(line);
     }
