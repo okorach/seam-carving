@@ -119,7 +119,7 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel)
     for (long i(0); i < max_i; ++i)
     {
         line.clear();
-        for (long j(0); j < max_j; ++i)
+        for (long j(0); j < max_j; ++j)
         {
             long val = kernel[0][0] * gray[clamp(i - 1, max_i)][clamp(j - 1, max_j)] +
             kernel[0][1] * gray[clamp(i - 1,max_i)][j] + 
@@ -251,7 +251,7 @@ double convolve_nxn(const GrayImage& gray, const Kernel& kernel, const int n)
     double result(0);
     for (long i(0); i < n; ++i)
     {
-        for (long j(0); j < n; ++i)
+        for (long j(0); j < n; ++j)
         {
             result = result + kernel[i][j] * gray[i][j];
         }
